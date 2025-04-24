@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import BottomNavigation from '../components/BottomNavigation';
-import logo from '../assets/logo.png';
 
 const Referrals = () => {
   const [referralLink, setReferralLink] = useState('https://smartcoin.app/ref/user123');

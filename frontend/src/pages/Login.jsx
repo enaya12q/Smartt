@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { verifyTelegramCode } from '../services/api';
-import logo from '../assets/logo.png';
 
 const Login = () => {
   const [step, setStep] = useState('initial'); // initial, verification, loading
@@ -18,7 +17,7 @@ const Login = () => {
 
   const handleVerification = async (e) => {
     e.preventDefault();
-    
+
     if (!username) {
       setError('الرجاء إدخال اسم المستخدم على تيليغرام');
       return;
@@ -35,7 +34,7 @@ const Login = () => {
     try {
       // إرسال طلب التحقق إلى الخادم
       const response = await verifyTelegramCode(username, verificationCode);
-      
+
       if (response.success) {
         // تخزين معلومات المستخدم في التخزين المحلي
         localStorage.setItem('smartCoinUser', JSON.stringify({
@@ -43,50 +42,40 @@ const Login = () => {
           isAuthenticated: true,
           ...response.user
         }));
-        
-        navigate('/mining');
+        navigate('/dashboard');
       } else {
-        setError(response.message || 'فشل التحقق، الرجاء المحاولة مرة أخرى');
+        setError('التحقق فشل، تأكد من البيانات');
         setStep('verification');
       }
     } catch (error) {
-      setError(error.message || 'حدث خطأ أثناء التحقق، الرجاء المحاولة مرة أخرى');
+      setError('حدث خطأ أثناء التحقق، حاول مرة أخرى');
       setStep('verification');
     }
   };
 
   return (
     <div className="login-container">
-      <div className="login-card">
-        <img src={logo} alt="Smart Coin Logo" className="login-logo" />
-        <h1 className="login-title">تسجيل الدخول</h1>
-
+      <div className="login-box">
         {step === 'initial' && (
           <div>
-            <button 
-              className="btn btn-primary btn-block login-telegram-btn" 
-              onClick={handleTelegramLogin}
-            >
-              <i className="fas fa-paper-plane"></i>
-              تسجيل الدخول بتيليجرام
+            <h2>تسجيل الدخول</h2>
+            <button className="btn btn-primary" onClick={handleTelegramLogin}>
+              تسجيل الدخول باستخدام تيليغرام
             </button>
-            <p className="login-footer mt-3">
-              ليس لديك حساب؟ <a href="#" onClick={handleTelegramLogin}>إنشاء حساب جديد</a>
-            </p>
           </div>
         )}
 
         {step === 'verification' && (
           <form onSubmit={handleVerification}>
             <div className="form-group">
-              <label htmlFor="username">اسم المستخدم على تيليجرام</label>
+              <label htmlFor="username">اسم المستخدم على تيليغرام</label>
               <input
                 type="text"
                 id="username"
                 className="form-control"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="أدخل اسم المستخدم الخاص بك"
+                placeholder="أدخل اسم المستخدم"
                 required
               />
             </div>
@@ -106,8 +95,8 @@ const Login = () => {
             <button type="submit" className="btn btn-primary btn-block">
               تحقق وتسجيل الدخول
             </button>
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="btn btn-secondary btn-block mt-2"
               onClick={() => setStep('initial')}
             >

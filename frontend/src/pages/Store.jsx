@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import BottomNavigation from '../components/BottomNavigation';
-import logo from '../assets/logo.png';
 import tonService from '../services/ton';
 
 const Store = () => {

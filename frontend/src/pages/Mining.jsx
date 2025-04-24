@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import BottomNavigation from '../components/BottomNavigation';
-import logo from '../assets/logo.png';
 import { performMining } from '../services/api';
 
 const Mining = () => {
@@ -45,7 +44,6 @@ const Mining = () => {
       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
       setTimeLeft({ days, hours, minutes, seconds });
-      setIsMining(true);
     }, 1000);
 
     return () => clearInterval(interval);
@@ -53,7 +51,7 @@ const Mining = () => {
 
   const handleStartMining = async () => {
     if (!user || !user.username) {
-      setError('يرجى تسجيل الدخول أولاً');
+      setError('يرجى تسجيل الدخول أولا');
       return;
     }
 
@@ -63,25 +61,25 @@ const Mining = () => {
 
     try {
       const response = await performMining(user.username);
-      
+
       if (response.success) {
         setSuccess(response.message);
-        
+
         // تحديث معلومات المستخدم في التخزين المحلي
         const updatedUser = {
           ...user,
           balance: response.newBalance,
           next_mining: response.nextMining
         };
-        
+
         localStorage.setItem('smartCoinUser', JSON.stringify(updatedUser));
         setUser(updatedUser);
-        
+
         // تحديث العد التنازلي
         updateCountdown(new Date(response.nextMining));
       } else {
         setError(response.message);
-        
+
         if (response.nextMining) {
           updateCountdown(new Date(response.nextMining));
         }
@@ -96,7 +94,6 @@ const Mining = () => {
   return (
     <div className="mining-container">
       <div className="mining-header">
-        <img src={logo} alt="Smart Coin Logo" className="mining-logo" />
         <h1 className="mining-title">Smart Coin</h1>
         <p className="mining-subtitle">المستقبل الذكي للعملات الرقمية</p>
       </div>
@@ -120,69 +117,60 @@ const Mining = () => {
         </div>
       </div>
 
-      <div className="mining-chart">
-        {/* سيتم إضافة رسم بياني هنا */}
-        <img src="https://via.placeholder.com/600x150" alt="Mining Chart" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-      </div>
+      <button  
+        className={`btn ${isMining ? 'btn-secondary' : 'btn-primary'} mining-btn`}  
+        onClick={handleStartMining}  
+        disabled={isMining || isLoading}  
+      >  
+        {isLoading ? (  
+          <span>جاري التحميل...</span>  
+        ) : isMining ? (  
+          <span>جاري التعدين...</span>  
+        ) : (  
+          <span>ابدأ التعدين</span>  
+        )}  
+      </button>  
 
-      {error && <div className="notification notification-error mb-3">{error}</div>}
-      {success && <div className="notification notification-success mb-3">{success}</div>}
+      {isMining && (  
+        <p className="text-center mt-2">  
+          ستحصل على {user?.mining_rate || 15} عملة يوميا. يمكنك التعدين مرة أخرى بعد 24 ساعة.  
+        </p>  
+      )}  
 
-      <button 
-        className={`btn ${isMining ? 'btn-secondary' : 'btn-primary'} mining-btn`}
-        onClick={handleStartMining}
-        disabled={isMining || isLoading}
-      >
-        {isLoading ? (
-          <span>جاري التحميل...</span>
-        ) : isMining ? (
-          <span>جاري التعدين...</span>
-        ) : (
-          <span>ابدأ التعدين</span>
-        )}
-      </button>
+      <div className="mining-features">  
+        <div className="mining-feature-item">  
+          <div className="mining-feature-icon">  
+            <i className="fas fa-globe"></i>  
+          </div>  
+          <div className="mining-feature-content">  
+            <h3 className="mining-feature-title">عالمية</h3>  
+            <p className="mining-feature-desc">تداول بحرية في أي مكان حول العالم بدون قيود</p>  
+          </div>  
+        </div>  
 
-      {isMining && (
-        <p className="text-center mt-2">
-          ستحصل على {user?.mining_rate || 15} عملة يومياً. يمكنك التعدين مرة أخرى بعد 24 ساعة.
-        </p>
-      )}
+        <div className="mining-feature-item">  
+          <div className="mining-feature-icon">  
+            <i className="fas fa-chart-line"></i>  
+          </div>  
+          <div className="mining-feature-content">  
+            <h3 className="mining-feature-title">نمو سريع</h3>  
+            <p className="mining-feature-desc">استثمر في مستقبل العملات الرقمية مع إمكانية نمو</p>  
+          </div>  
+        </div>  
+        <div className="mining-feature-item">  
+          <div className="mining-feature-icon">  
+            <i className="fas fa-lock"></i>  
+          </div>  
+          <div className="mining-feature-content">  
+            <h3 className="mining-feature-title">آمنة تماما</h3>  
+            <p className="mining-feature-desc">تقنية بلوكتشين متطورة لحماية أموالك الرقمية</p>  
+          </div>  
+        </div>  
+      </div>  
 
-      <div className="mining-features">
-        <div className="mining-feature-item">
-          <div className="mining-feature-icon">
-            <i className="fas fa-globe"></i>
-          </div>
-          <div className="mining-feature-content">
-            <h3 className="mining-feature-title">عالمية</h3>
-            <p className="mining-feature-desc">تداول بحرية في أي مكان حول العالم بدون قيود</p>
-          </div>
-        </div>
-
-        <div className="mining-feature-item">
-          <div className="mining-feature-icon">
-            <i className="fas fa-chart-line"></i>
-          </div>
-          <div className="mining-feature-content">
-            <h3 className="mining-feature-title">نمو سريع</h3>
-            <p className="mining-feature-desc">استثمر في مستقبل العملات الرقمية مع إمكانية نمو استثنائية</p>
-          </div>
-        </div>
-
-        <div className="mining-feature-item">
-          <div className="mining-feature-icon">
-            <i className="fas fa-lock"></i>
-          </div>
-          <div className="mining-feature-content">
-            <h3 className="mining-feature-title">آمنة تماماً</h3>
-            <p className="mining-feature-desc">تقنية بلوكتشين متطورة لحماية أموالك الرقمية</p>
-          </div>
-        </div>
-      </div>
-
-      <BottomNavigation />
-    </div>
-  );
-};
-
+      <BottomNavigation />  
+    </div>  
+  );  
+};  
+  
 export default Mining;

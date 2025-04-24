@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import BottomNavigation from '../components/BottomNavigation';
-import logo from '../assets/logo.png';
 
 const Profile = () => {
   const [user, setUser] = useState({
