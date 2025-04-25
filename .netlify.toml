@@ -1,8 +1,0 @@
-[build]
-  publish = "dist"  # مجلد الخرج من Vite
-  command = "npm install && npm run build"  # أمر البناء الخاص بك
-
-[build.environment]
-  VITE_API_URL = "https://smart-coin-backend.onrender.com"  # المتغيرات البيئة
-  VITE_TELEGRAM_BOT_URL = "https://t.me/SMARTCOINAPPbot"
-
